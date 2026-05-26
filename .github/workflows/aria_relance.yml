@@ -1,14 +1,12 @@
-name: ARIA — Relances inscriptions incomplètes
+name: ARIA - Relances inscriptions incompletes
 
 on:
   schedule:
-    # Tous les 3 jours à 08h30 UTC (≈ 08h30 Dakar / 09h30 Paris)
-    # Mardi, Vendredi, Dimanche — décalé de PROFIA (Lundi, Jeudi, Dimanche)
     - cron: '30 8 * * 2,5,0'
   workflow_dispatch:
     inputs:
       dry_run:
-        description: 'Mode simulation (aucun email envoyé, résultats visibles en log)'
+        description: 'Mode simulation (aucun email envoye)'
         required: false
         default: 'false'
         type: choice
@@ -18,12 +16,12 @@ on:
 
 jobs:
   aria-relances:
-    name: ARIA – Relances inscriptions incomplètes
+    name: ARIA - Relances inscriptions incompletes
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
     steps:
-      - name: Déclenchement relances ARIA
+      - name: Declenchement relances ARIA
         run: |
           DRY_RUN="${{ github.event.inputs.dry_run || 'false' }}"
 
@@ -33,8 +31,8 @@ jobs:
             BODY='{}'
           fi
 
-          echo "→ ARIA : appel POST ${{ secrets.GLOBALO_URL }}/api/cron/aria-relance"
-          echo "→ Mode simulation : $DRY_RUN"
+          echo "-> ARIA : appel POST ${{ secrets.GLOBALO_URL }}/api/cron/aria-relance"
+          echo "-> Mode simulation : $DRY_RUN"
 
           RESPONSE=$(curl -s -w "\n%{http_code}" \
             --max-time 90 \
@@ -51,20 +49,23 @@ jobs:
           echo "$BODY_RESP" | python3 -m json.tool 2>/dev/null || echo "$BODY_RESP"
 
           if [ "$HTTP_CODE" != "200" ]; then
-            echo "::error::ARIA relances échouées (HTTP $HTTP_CODE) — réponse: $BODY_RESP"
+            echo "::error::ARIA relances echouees (HTTP $HTTP_CODE)"
             exit 1
           fi
 
           OK=$(echo "$BODY_RESP" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('ok',''))" 2>/dev/null)
           if [ "$OK" != "True" ] && [ "$OK" != "true" ] && [ "$OK" != "1" ]; then
-            echo "::warning::Réponse inattendue: $BODY_RESP"
+            echo "::warning::Reponse inattendue: $BODY_RESP"
             exit 1
           fi
 
-          STATS=$(echo "$BODY_RESP" | python3 -c "
+          echo "$BODY_RESP" | python3 -c "
 import sys, json
 d = json.load(sys.stdin)
 r = d.get('result', {})
-print(f\"✅ ARIA — Traités: {r.get('processed',0)} | Envoyés: {r.get('sent',0)} | Ignorés (cooldown): {r.get('skipped',0)} | Erreurs: {r.get('errors',0)}\")
-" 2>/dev/null)
-          echo "$STATS"
+sent = r.get('sent', 0)
+skipped = r.get('skipped', 0)
+errors = r.get('errors', 0)
+processed = r.get('processed', 0)
+print('ARIA OK - Traites: ' + str(processed) + ' | Envoyes: ' + str(sent) + ' | Ignores: ' + str(skipped) + ' | Erreurs: ' + str(errors))
+" 2>/dev/null

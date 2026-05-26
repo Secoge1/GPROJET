@@ -1,14 +1,12 @@
-name: PROFIA — Relances profils incomplets
+name: PROFIA - Relances profils incomplets
 
 on:
   schedule:
-    # Tous les 3 jours à 09h00 UTC (≈ 09h Dakar / 10h Paris)
-    # Lundi, Jeudi, Dimanche
     - cron: '0 9 * * 1,4,0'
   workflow_dispatch:
     inputs:
       dry_run:
-        description: 'Mode simulation (aucun email envoyé, résultats visibles en log)'
+        description: 'Mode simulation (aucun email envoye)'
         required: false
         default: 'false'
         type: choice
@@ -18,12 +16,12 @@ on:
 
 jobs:
   profia-relances:
-    name: PROFIA – Relances profils incomplets
+    name: PROFIA - Relances profils incomplets
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
     steps:
-      - name: Déclenchement relances PROFIA
+      - name: Declenchement relances PROFIA
         run: |
           DRY_RUN="${{ github.event.inputs.dry_run || 'false' }}"
 
@@ -33,8 +31,8 @@ jobs:
             BODY='{}'
           fi
 
-          echo "→ PROFIA : appel POST ${{ secrets.GLOBALO_URL }}/api/cron/profia-relance"
-          echo "→ Mode simulation : $DRY_RUN"
+          echo "-> PROFIA : appel POST ${{ secrets.GLOBALO_URL }}/api/cron/profia-relance"
+          echo "-> Mode simulation : $DRY_RUN"
 
           RESPONSE=$(curl -s -w "\n%{http_code}" \
             --max-time 90 \
@@ -51,20 +49,23 @@ jobs:
           echo "$BODY_RESP" | python3 -m json.tool 2>/dev/null || echo "$BODY_RESP"
 
           if [ "$HTTP_CODE" != "200" ]; then
-            echo "::error::PROFIA relances échouées (HTTP $HTTP_CODE) — réponse: $BODY_RESP"
+            echo "::error::PROFIA relances echouees (HTTP $HTTP_CODE)"
             exit 1
           fi
 
           OK=$(echo "$BODY_RESP" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('ok',''))" 2>/dev/null)
           if [ "$OK" != "True" ] && [ "$OK" != "true" ] && [ "$OK" != "1" ]; then
-            echo "::warning::Réponse inattendue: $BODY_RESP"
+            echo "::warning::Reponse inattendue: $BODY_RESP"
             exit 1
           fi
 
-          STATS=$(echo "$BODY_RESP" | python3 -c "
+          echo "$BODY_RESP" | python3 -c "
 import sys, json
 d = json.load(sys.stdin)
 r = d.get('result', {})
-print(f\"✅ PROFIA — Traités: {r.get('processed',0)} | Envoyés: {r.get('sent',0)} | Ignorés (cooldown): {r.get('skipped',0)} | Erreurs: {r.get('errors',0)}\")
-" 2>/dev/null)
-          echo "$STATS"
+sent = r.get('sent', 0)
+skipped = r.get('skipped', 0)
+errors = r.get('errors', 0)
+processed = r.get('processed', 0)
+print('PROFIA OK - Traites: ' + str(processed) + ' | Envoyes: ' + str(sent) + ' | Ignores: ' + str(skipped) + ' | Erreurs: ' + str(errors))
+" 2>/dev/null
