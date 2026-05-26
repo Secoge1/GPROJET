@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" aria-hidden="true">
+  <!-- Diplôme / expertise (pas d'étoile) -->
+  <path fill="#eab308" d="M32 12L8 26v2h2l3 22h38l3-22h2v-2L32 12zm0 5.2L54 26.8v.4h-2l-2.5 18h-35L12 27.2h-2v-.4L32 17.2z"/>
+  <path fill="#ca8a04" d="M32 20l16 8v2l-16-8-16 8v-2l16-8z"/>
+  <circle fill="#eab308" cx="32" cy="50" r="5"/>
+</svg>

@@ -1,0 +1,65 @@
+name: Emails IA automatiques GLOBALO
+
+on:
+  schedule:
+    # Tous les jours à 08h00 UTC (≈ 09h Paris / 08h Dakar)
+    - cron: '0 8 * * *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Mode simulation (aucun email envoyé)'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'false'
+          - 'true'
+
+jobs:
+  send-assistant-emails:
+    name: Campagne emails IA proactifs
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Déclenchement campagne emails IA GLOBALO
+        run: |
+          DRY_RUN="${{ github.event.inputs.dry_run || 'false' }}"
+
+          if [ "$DRY_RUN" = "true" ]; then
+            BODY='{"dry_run":true}'
+          else
+            BODY='{}'
+          fi
+
+          echo "→ Appel POST ${{ secrets.GLOBALO_URL }}/api/cron/assistant-emails"
+          echo "→ Mode simulation : $DRY_RUN"
+          echo "→ Body : $BODY"
+
+          RESPONSE=$(curl -s -w "\n%{http_code}" \
+            --max-time 60 \
+            -X POST \
+            "${{ secrets.GLOBALO_URL }}/api/cron/assistant-emails" \
+            -H "X-Cron-Secret: ${{ secrets.CRON_SECRET }}" \
+            -H "Content-Type: application/json" \
+            -d "$BODY")
+
+          HTTP_CODE=$(echo "$RESPONSE" | tail -1)
+          BODY_RESP=$(echo "$RESPONSE" | head -1)
+
+          echo "HTTP $HTTP_CODE"
+          echo "$BODY_RESP" | python3 -m json.tool 2>/dev/null || echo "$BODY_RESP"
+
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "::error::Campagne emails échouée (HTTP $HTTP_CODE) — réponse: $BODY_RESP"
+            exit 1
+          fi
+
+          OK=$(echo "$BODY_RESP" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('ok',''))" 2>/dev/null)
+          if [ "$OK" != "True" ] && [ "$OK" != "true" ] && [ "$OK" != "1" ]; then
+            echo "::warning::Réponse inattendue: $BODY_RESP"
+            exit 1
+          fi
+
+          SENT=$(echo "$BODY_RESP" | python3 -c "import sys,json; d=json.load(sys.stdin); r=d.get('result',{}); print(f\"Envoyés: {r.get('sent',0)} | Ignorés: {r.get('skipped',0)} | Erreurs: {r.get('errors',0)}\")" 2>/dev/null)
+          echo "✅ Campagne terminée — $SENT"

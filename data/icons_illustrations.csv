@@ -1,0 +1,15 @@
+id,label_fr,illustration_path,emoji_fallback,context
+home,Accueil,assets/icons/illustrations/home.svg,&#127968;,nav_mobile
+demandes,Demandes,assets/icons/illustrations/demandes.svg,&#128230;,nav_mobile
+missions,Missions,assets/icons/illustrations/missions.svg,&#128295;,nav_mobile
+messages,Messages,assets/icons/illustrations/messages.svg,&#128172;,nav_mobile
+profil,Profil,assets/icons/illustrations/profil.svg,&#128100;,nav_mobile
+login,Connexion,assets/icons/illustrations/login.svg,&#128274;,nav_mobile
+experts,Experts,assets/icons/illustrations/expert.svg,⭐,nav_mobile
+client,Client,assets/icons/illustrations/client.svg,👤,about
+expert,Expert,assets/icons/illustrations/expert.svg,⭐,about
+contact,Contact,assets/icons/illustrations/contact.svg,✉️,contact
+alert,Alerte,assets/icons/illustrations/alert.svg,!,auth
+success,Succès,assets/icons/illustrations/success.svg,✓,auth
+empty_search,Recherche vide,assets/icons/illustrations/empty_search.svg,🔍,experts
+chatbot,Assistant,assets/icons/illustrations/chatbot.svg,💬,chatbot

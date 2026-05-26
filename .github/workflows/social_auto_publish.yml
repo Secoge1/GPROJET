@@ -1,0 +1,62 @@
+name: Publication IA automatique GLOBALO
+
+# Déclenché automatiquement ou manuellement
+on:
+  schedule:
+    # Lundi, mercredi, vendredi, samedi à 09h00 UTC (≈ 10h Dakar/Abidjan)
+    - cron: '0 9 * * 1,3,5,6'
+  workflow_dispatch:
+    inputs:
+      sujet:
+        description: 'Sujet personnalisé (optionnel)'
+        required: false
+        default: ''
+
+jobs:
+  publish:
+    name: Publier sur Facebook & LinkedIn
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Déclenchement publication IA GLOBALO
+        run: |
+          SUJET="${{ github.event.inputs.sujet }}"
+          if [ -n "$SUJET" ]; then
+            BODY=$(printf '{"sujet":"%s"}' "$(echo "$SUJET" | sed 's/"/\\"/g')")
+          else
+            BODY='{}'
+          fi
+
+          echo "→ Appel POST ${{ secrets.GLOBALO_URL }}/api/cron/social"
+          echo "→ Body : $BODY"
+
+          RESPONSE=$(curl -s -w "\n%{http_code}" \
+            --max-time 30 \
+            -X POST \
+            "${{ secrets.GLOBALO_URL }}/api/cron/social" \
+            -H "X-Cron-Secret: ${{ secrets.CRON_SECRET }}" \
+            -H "Content-Type: application/json" \
+            -d "$BODY")
+
+          HTTP_CODE=$(echo "$RESPONSE" | tail -1)
+          BODY_RESP=$(echo "$RESPONSE" | head -1)
+
+          echo "HTTP $HTTP_CODE"
+          echo "$BODY_RESP" | python3 -m json.tool 2>/dev/null || echo "$BODY_RESP"
+
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "::error::Publication échouée (HTTP $HTTP_CODE) — réponse: $BODY_RESP"
+            exit 1
+          fi
+
+          # Vérifier que la réponse JSON contient ok:true
+          OK=$(echo "$BODY_RESP" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('ok',''))" 2>/dev/null)
+          if [ "$OK" != "True" ] && [ "$OK" != "true" ] && [ "$OK" != "1" ]; then
+            SKIPPED=$(echo "$BODY_RESP" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('result',{}).get('skipped',''))" 2>/dev/null)
+            if [ "$SKIPPED" = "True" ]; then
+              echo "ℹ️ Pas de publication prévue aujourd'hui (jour non configuré)."
+              exit 0
+            fi
+            echo "::warning::Réponse inattendue: $BODY_RESP"
+          fi

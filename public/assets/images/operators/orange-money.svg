@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 48" fill="none" role="img" aria-labelledby="oT">
+  <title id="oT">Orange Money</title>
+  <rect width="120" height="48" rx="10" fill="#ffffff" stroke="#E8E8E8" stroke-width="1"/>
+  <!-- Fl�ches Orange Money -->
+  <path d="M14 32 L26 14 L22 14 L14 28 L6 14 L2 14 Z" fill="#000000"/>
+  <path d="M30 14 L42 32 L38 32 L30 18 L22 32 L18 32 Z" fill="#FF7900"/>
+  <text x="50" y="22" font-family="system-ui,Segoe UI,Arial,sans-serif" font-size="10" font-weight="800" fill="#000000">Orange</text>
+  <text x="50" y="35" font-family="system-ui,Segoe UI,Arial,sans-serif" font-size="10" font-weight="800" fill="#000000">Money</text>
+</svg>

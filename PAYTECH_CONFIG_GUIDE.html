@@ -1,0 +1,433 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guide Configuration Paiement Mobile — GLOBALO</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f1f5f9; color: #1e293b; line-height: 1.6; }
+
+        .header { background: linear-gradient(135deg, #0d9488, #0891b2); color: #fff; padding: 2.5rem 2rem; text-align: center; }
+        .header h1 { font-size: 1.8rem; font-weight: 800; margin-bottom: .4rem; }
+        .header p  { opacity: .85; font-size: 1rem; }
+
+        .container { max-width: 860px; margin: 2rem auto; padding: 0 1rem 4rem; }
+
+        .badge { display: inline-block; padding: .2rem .7rem; border-radius: 20px; font-size: .75rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+        .badge-local  { background: #dbeafe; color: #1d4ed8; }
+        .badge-prod   { background: #dcfce7; color: #166534; }
+        .badge-both   { background: #fef9c3; color: #854d0e; }
+        .badge-warn   { background: #fee2e2; color: #991b1b; }
+
+        .card { background: #fff; border-radius: 14px; box-shadow: 0 2px 16px rgba(0,0,0,.07); margin-bottom: 1.75rem; overflow: hidden; }
+        .card-header { padding: 1.1rem 1.5rem; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; gap: .75rem; }
+        .card-header h2 { font-size: 1.05rem; font-weight: 700; flex: 1; }
+        .card-body  { padding: 1.4rem 1.5rem; }
+
+        .step { display: flex; gap: 1rem; margin-bottom: 1.25rem; }
+        .step:last-child { margin-bottom: 0; }
+        .step-num { flex-shrink: 0; width: 28px; height: 28px; background: #0d9488; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: .8rem; font-weight: 700; margin-top: .1rem; }
+        .step-content { flex: 1; }
+        .step-content strong { display: block; margin-bottom: .3rem; color: #0f172a; }
+        .step-content p { font-size: .9rem; color: #475569; margin-bottom: .5rem; }
+
+        code { font-family: 'Courier New', monospace; }
+        .code-block { background: #0f172a; color: #e2e8f0; border-radius: 10px; padding: 1.1rem 1.25rem; font-family: 'Courier New', monospace; font-size: .88rem; line-height: 1.8; overflow-x: auto; margin: .6rem 0; position: relative; }
+        .code-block .comment { color: #64748b; }
+        .code-block .key     { color: #7dd3fc; }
+        .code-block .value   { color: #86efac; }
+        .code-block .section { color: #fbbf24; font-weight: bold; }
+
+        .copy-btn { position: absolute; top: .6rem; right: .6rem; background: #334155; color: #94a3b8; border: none; border-radius: 6px; padding: .3rem .7rem; font-size: .75rem; cursor: pointer; }
+        .copy-btn:hover { background: #475569; color: #fff; }
+
+        .path-box { background: #f8fafc; border: 1.5px dashed #cbd5e1; border-radius: 8px; padding: .75rem 1rem; font-family: monospace; font-size: .9rem; color: #0d9488; margin: .5rem 0; }
+        .path-box span { color: #64748b; font-size: .78rem; display: block; font-family: sans-serif; margin-bottom: .2rem; }
+
+        .alert { border-radius: 8px; padding: .9rem 1.1rem; font-size: .88rem; margin: .75rem 0; display: flex; gap: .6rem; align-items: flex-start; }
+        .alert-info  { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; }
+        .alert-warn  { background: #fffbeb; border: 1px solid #fcd34d; color: #92400e; }
+        .alert-danger{ background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; }
+        .alert-ok    { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; }
+        .alert svg   { flex-shrink: 0; margin-top: .1rem; }
+
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
+
+        .divider { border: none; border-top: 2px solid #e2e8f0; margin: 2rem 0; }
+        .toc { background: #fff; border-radius: 12px; padding: 1.25rem 1.5rem; box-shadow: 0 2px 12px rgba(0,0,0,.06); margin-bottom: 2rem; }
+        .toc h3 { font-size: .85rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: .05em; margin-bottom: .75rem; }
+        .toc a  { display: block; padding: .3rem 0; font-size: .9rem; color: #0d9488; text-decoration: none; }
+        .toc a:hover { text-decoration: underline; }
+
+        table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+        th { background: #f8fafc; padding: .65rem 1rem; text-align: left; font-weight: 600; color: #475569; border-bottom: 2px solid #e2e8f0; }
+        td { padding: .6rem 1rem; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+        tr:last-child td { border-bottom: none; }
+
+        .env-var { font-family: monospace; font-size: .85rem; color: #7c3aed; background: #f5f3ff; padding: .15rem .4rem; border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>⚙️ Configuration Paiement Mobile — GLOBALO</h1>
+    <p>Guide pas à pas pour configurer les clés API du service de paiement en local (WAMP) et sur le serveur de production</p>
+</div>
+
+<div class="container">
+
+    <!-- TABLE DES MATIÈRES -->
+    <div class="toc">
+        <h3>Sommaire</h3>
+        <a href="#obtenir-cles">① Obtenir vos clés API de paiement</a>
+        <a href="#local-wamp">② Configuration en local (WAMP)</a>
+        <a href="#production-apache">③ Configuration en production (Apache / cPanel)</a>
+        <a href="#production-nginx">④ Configuration en production (Nginx)</a>
+        <a href="#env-file">⑤ Alternative : fichier .env</a>
+        <a href="#verifier">⑥ Vérifier que tout fonctionne</a>
+        <a href="#variables">⑦ Tableau de toutes les variables</a>
+    </div>
+
+    <!-- ÉTAPE 0 : OBTENIR LES CLÉS -->
+    <div class="card" id="obtenir-cles">
+        <div class="card-header">
+            <span style="font-size:1.4rem;">🔑</span>
+            <h2>① Obtenir vos clés API de paiement</h2>
+            <span class="badge badge-both">Obligatoire</span>
+        </div>
+        <div class="card-body">
+            <div class="step">
+                <div class="step-num">1</div>
+                <div class="step-content">
+                    <strong>Connectez-vous à votre tableau de bord du service de paiement</strong>
+                    <p>Rendez-vous sur le tableau de bord de votre prestataire de paiement et connectez-vous avec votre compte marchand.</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">2</div>
+                <div class="step-content">
+                    <strong>Accédez à la section « Développeur » ou « API »</strong>
+                    <p>Dans le menu, cherchez <strong>Paramètres → API</strong> ou <strong>Développeur</strong>. Vous trouverez votre <code>API_KEY</code> et votre <code>API_SECRET</code>.</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">3</div>
+                <div class="step-content">
+                    <strong>Notez bien les deux valeurs</strong>
+                    <p>Vous aurez besoin de :</p>
+                    <div class="two-col" style="margin-top:.5rem;">
+                        <div class="path-box"><span>Clé API</span>PAYTECH_API_KEY = <em>votre_cle</em></div>
+                        <div class="path-box"><span>Secret API</span>PAYTECH_API_SECRET = <em>votre_secret</em></div>
+                    </div>
+                </div>
+            </div>
+            <div class="alert alert-warn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                <div>Pour les <strong>tests</strong>, utilisez <code>PAYTECH_ENV=test</code>. Le service de paiement débitera un montant fictif (100–150 CFA) au lieu du vrai montant. <strong>En production</strong>, mettez <code>PAYTECH_ENV=prod</code>.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ───────── LOCAL WAMP ───────── -->
+    <div class="card" id="local-wamp">
+        <div class="card-header">
+            <span style="font-size:1.4rem;">💻</span>
+            <h2>② En local — WAMP (Windows)</h2>
+            <span class="badge badge-local">Local uniquement</span>
+        </div>
+        <div class="card-body">
+
+            <p style="font-size:.9rem;color:#475569;margin-bottom:1.25rem;">
+                Il y a <strong>deux méthodes</strong> pour configurer WAMP en local. Choisissez celle qui vous convient.
+            </p>
+
+            <!-- MÉTHODE A : httpd-vhosts.conf -->
+            <div class="step">
+                <div class="step-num">A</div>
+                <div class="step-content">
+                    <strong>Méthode A — Via le VirtualHost (recommandée)</strong>
+                    <p>Ouvrez le fichier de configuration du VirtualHost WAMP :</p>
+                    <div class="path-box">
+                        <span>Chemin du fichier à modifier</span>
+                        C:\wamp64\bin\apache\apache2.x.x\conf\extra\httpd-vhosts.conf
+                    </div>
+                    <p style="margin-top:.5rem;">Ajoutez les lignes <code>SetEnv</code> dans votre <code>&lt;VirtualHost&gt;</code> :</p>
+                    <div class="code-block" style="position:relative;">
+                        <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+<span class="section">&lt;VirtualHost *:80&gt;</span>
+    <span class="comment"># ... vos lignes existantes ...</span>
+    <span class="key">DocumentRoot</span>   <span class="value">"C:/wamp64/www/GloboProject/public"</span>
+    <span class="key">ServerName</span>     <span class="value">globalo.local</span>
+
+    <span class="comment"># ── PayTech API ──────────────────────────────</span>
+    <span class="key">SetEnv</span> <span class="value">PAYTECH_API_KEY    votre_api_key_paytech</span>
+    <span class="key">SetEnv</span> <span class="value">PAYTECH_API_SECRET votre_api_secret_paytech</span>
+    <span class="key">SetEnv</span> <span class="value">PAYTECH_ENV        test</span>
+    <span class="comment"># ─────────────────────────────────────────────</span>
+<span class="section">&lt;/VirtualHost&gt;</span></div>
+                    <div class="alert alert-info">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                        <span>Après modification → <strong>clic droit sur l'icône WAMP → Restart All Services</strong></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MÉTHODE B : .htaccess -->
+            <div class="step" style="margin-top:1.25rem;">
+                <div class="step-num">B</div>
+                <div class="step-content">
+                    <strong>Méthode B — Via le fichier <code>.htaccess</code> du projet</strong>
+                    <p>Ouvrez (ou créez) le fichier <code>.htaccess</code> à la racine du dossier <code>public/</code> :</p>
+                    <div class="path-box">
+                        <span>Fichier à modifier</span>
+                        C:\wamp64\www\GloboProject\public\.htaccess
+                    </div>
+                    <div class="code-block" style="position:relative;">
+                        <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+<span class="comment"># ── PayTech API ──────────────────────────────</span>
+<span class="key">SetEnv</span> <span class="value">PAYTECH_API_KEY    votre_api_key_paytech</span>
+<span class="key">SetEnv</span> <span class="value">PAYTECH_API_SECRET votre_api_secret_paytech</span>
+<span class="key">SetEnv</span> <span class="value">PAYTECH_ENV        test</span>
+<span class="comment"># ─────────────────────────────────────────────</span></div>
+                    <div class="alert alert-warn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                        <span><strong>Ne commitez jamais</strong> ce fichier avec les vraies clés dans Git. Ajoutez <code>.htaccess</code> à votre <code>.gitignore</code> si vous y mettez des secrets.</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ───────── PRODUCTION APACHE ───────── -->
+    <div class="card" id="production-apache">
+        <div class="card-header">
+            <span style="font-size:1.4rem;">🚀</span>
+            <h2>③ En production — Apache (cPanel / hébergement mutualisé)</h2>
+            <span class="badge badge-prod">Production</span>
+        </div>
+        <div class="card-body">
+
+            <div class="step">
+                <div class="step-num">1</div>
+                <div class="step-content">
+                    <strong>Option cPanel — Variables d'environnement dans l'interface</strong>
+                    <p>Connectez-vous à cPanel → cherchez <strong>« Variables d'environnement »</strong> ou <strong>« Environment Variables »</strong> → ajoutez :</p>
+                    <div class="two-col">
+                        <div class="path-box"><span>Nom</span>PAYTECH_API_KEY</div>
+                        <div class="path-box"><span>Valeur</span>votre_api_key_paytech</div>
+                        <div class="path-box"><span>Nom</span>PAYTECH_API_SECRET</div>
+                        <div class="path-box"><span>Valeur</span>votre_api_secret_paytech</div>
+                        <div class="path-box"><span>Nom</span>PAYTECH_ENV</div>
+                        <div class="path-box"><span>Valeur</span>prod</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-num">2</div>
+                <div class="step-content">
+                    <strong>Option VirtualHost Apache (accès SSH/root)</strong>
+                    <p>Éditez le fichier de configuration Apache de votre domaine (souvent dans <code>/etc/apache2/sites-available/</code>) :</p>
+                    <div class="code-block" style="position:relative;">
+                        <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+<span class="section">&lt;VirtualHost *:443&gt;</span>
+    <span class="key">ServerName</span>   <span class="value">globalo.secogesarl.com</span>
+    <span class="key">DocumentRoot</span> <span class="value">/var/www/GloboProject/public</span>
+
+    <span class="comment"># ── PayTech API ──────────────────────────</span>
+    <span class="key">SetEnv</span> <span class="value">PAYTECH_API_KEY    votre_api_key_paytech</span>
+    <span class="key">SetEnv</span> <span class="value">PAYTECH_API_SECRET votre_api_secret_paytech</span>
+    <span class="key">SetEnv</span> <span class="value">PAYTECH_ENV        prod</span>
+    <span class="comment"># ─────────────────────────────────────────</span>
+
+    <span class="comment"># ... reste de votre config SSL ...</span>
+<span class="section">&lt;/VirtualHost&gt;</span></div>
+                    <p style="font-size:.82rem;color:#64748b;margin-top:.4rem;">Puis redémarrez Apache : <code>sudo systemctl reload apache2</code></p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-num">3</div>
+                <div class="step-content">
+                    <strong>Option .htaccess (si pas accès au VirtualHost)</strong>
+                    <p>Fichier : <code>/public/.htaccess</code> de votre projet :</p>
+                    <div class="code-block" style="position:relative;">
+                        <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+<span class="key">SetEnv</span> <span class="value">PAYTECH_API_KEY    votre_api_key_paytech</span>
+<span class="key">SetEnv</span> <span class="value">PAYTECH_API_SECRET votre_api_secret_paytech</span>
+<span class="key">SetEnv</span> <span class="value">PAYTECH_ENV        prod</span></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ───────── PRODUCTION NGINX ───────── -->
+    <div class="card" id="production-nginx">
+        <div class="card-header">
+            <span style="font-size:1.4rem;">⚡</span>
+            <h2>④ En production — Nginx + PHP-FPM</h2>
+            <span class="badge badge-prod">Production</span>
+        </div>
+        <div class="card-body">
+            <p style="font-size:.9rem;color:#475569;margin-bottom:1rem;">Nginx ne supporte pas <code>SetEnv</code>. Les variables doivent être déclarées dans le pool PHP-FPM.</p>
+
+            <div class="step">
+                <div class="step-num">1</div>
+                <div class="step-content">
+                    <strong>Éditez le pool PHP-FPM de votre site</strong>
+                    <p>Fichier souvent à : <code>/etc/php/8.x/fpm/pool.d/www.conf</code></p>
+                    <div class="code-block" style="position:relative;">
+                        <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+<span class="comment">; ── PayTech API ─────────────────────────────────</span>
+<span class="key">env</span>[<span class="value">PAYTECH_API_KEY</span>]    = <span class="value">votre_api_key_paytech</span>
+<span class="key">env</span>[<span class="value">PAYTECH_API_SECRET</span>] = <span class="value">votre_api_secret_paytech</span>
+<span class="key">env</span>[<span class="value">PAYTECH_ENV</span>]        = <span class="value">prod</span>
+<span class="comment">; ─────────────────────────────────────────────────</span></div>
+                    <p style="font-size:.82rem;color:#64748b;margin-top:.4rem;">Puis : <code>sudo systemctl reload php8.x-fpm</code></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ───────── FICHIER .ENV ───────── -->
+    <div class="card" id="env-file">
+        <div class="card-header">
+            <span style="font-size:1.4rem;">📄</span>
+            <h2>⑤ Alternative — Fichier <code>.env</code> (local uniquement)</h2>
+            <span class="badge badge-local">Local uniquement</span>
+        </div>
+        <div class="card-body">
+            <p style="font-size:.9rem;color:#475569;margin-bottom:1rem;">
+                Si votre projet dispose d'un système de chargement <code>.env</code> (type Dotenv), créez ou modifiez le fichier <code>.env</code> à la racine du projet :
+            </p>
+            <div class="path-box">
+                <span>Fichier à créer / modifier</span>
+                C:\wamp64\www\GloboProject\.env
+            </div>
+            <div class="code-block" style="position:relative;margin-top:.75rem;">
+                <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+<span class="comment"># ── PayTech ────────────────────────────────────</span>
+<span class="key">PAYTECH_API_KEY</span>=<span class="value">votre_api_key_paytech</span>
+<span class="key">PAYTECH_API_SECRET</span>=<span class="value">votre_api_secret_paytech</span>
+<span class="key">PAYTECH_ENV</span>=<span class="value">test</span>
+<span class="comment"># ───────────────────────────────────────────────</span></div>
+
+            <div class="alert alert-danger" style="margin-top:.75rem;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                <div>Ajoutez <strong><code>.env</code></strong> à votre fichier <strong><code>.gitignore</code></strong> pour ne jamais pousser vos clés secrètes sur GitHub / GitLab.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ───────── VÉRIFICATION ───────── -->
+    <div class="card" id="verifier">
+        <div class="card-header">
+            <span style="font-size:1.4rem;">✅</span>
+            <h2>⑥ Vérifier que la configuration est bien lue</h2>
+            <span class="badge badge-both">Local + Production</span>
+        </div>
+        <div class="card-body">
+            <div class="step">
+                <div class="step-num">1</div>
+                <div class="step-content">
+                    <strong>Créez un fichier de diagnostic temporaire</strong>
+                    <p>Créez le fichier <code>public/check_paytech.php</code> <em>(à supprimer après test !)</em> :</p>
+                    <div class="code-block" style="position:relative;">
+                        <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+<span class="comment">&lt;?php</span>
+<span class="comment">// FICHIER TEMPORAIRE — SUPPRIMER APRÈS VÉRIFICATION</span>
+$key    = getenv(<span class="value">'PAYTECH_API_KEY'</span>)    ?: <span class="value">'❌ NON DÉFINI'</span>;
+$secret = getenv(<span class="value">'PAYTECH_API_SECRET'</span>) ?: <span class="value">'❌ NON DÉFINI'</span>;
+$env    = getenv(<span class="value">'PAYTECH_ENV'</span>)        ?: <span class="value">'❌ NON DÉFINI'</span>;
+
+echo <span class="value">"&lt;pre&gt;"</span>;
+echo <span class="value">"PAYTECH_API_KEY    : "</span> . (strlen($key) &gt; 6 ? substr($key,0,4).<span class="value">'****'</span> : $key) . <span class="value">"\n"</span>;
+echo <span class="value">"PAYTECH_API_SECRET : "</span> . (strlen($secret) &gt; 6 ? substr($secret,0,4).<span class="value">'****'</span> : $secret) . <span class="value">"\n"</span>;
+echo <span class="value">"PAYTECH_ENV        : $env\n"</span>;
+echo <span class="value">"&lt;/pre&gt;"</span>;</div>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">2</div>
+                <div class="step-content">
+                    <strong>Accédez à la page dans votre navigateur</strong>
+                    <div class="path-box"><span>URL locale</span>http://localhost/GloboProject/public/check_paytech.php</div>
+                    <p style="margin-top:.5rem;">Vous devez voir vos clés <strong>masquées</strong> (ex: <code>ABCD****</code>). Si vous voyez ❌ NON DÉFINI, la variable n'est pas encore lue.</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">3</div>
+                <div class="step-content">
+                    <strong>Supprimez le fichier de diagnostic</strong>
+                    <div class="alert alert-danger">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+                        <span>Supprimez <code>public/check_paytech.php</code> immédiatement après le test. Ce fichier expose des informations sensibles.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ───────── TABLEAU DES VARIABLES ───────── -->
+    <div class="card" id="variables">
+        <div class="card-header">
+            <span style="font-size:1.4rem;">📋</span>
+            <h2>⑦ Tableau de toutes les variables</h2>
+        </div>
+        <div class="card-body">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Variable</th>
+                        <th>Obligatoire</th>
+                        <th>Valeur exemple</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="env-var">PAYTECH_API_KEY</span></td>
+                        <td><span class="badge badge-warn">Oui</span></td>
+                        <td><code>abc123xyz...</code></td>
+                        <td>Clé API fournie par le service de paiement dans votre tableau de bord</td>
+                    </tr>
+                    <tr>
+                        <td><span class="env-var">PAYTECH_API_SECRET</span></td>
+                        <td><span class="badge badge-warn">Oui</span></td>
+                        <td><code>def456uvw...</code></td>
+                        <td>Secret API — ne jamais partager ni commiter</td>
+                    </tr>
+                    <tr>
+                        <td><span class="env-var">PAYTECH_ENV</span></td>
+                        <td><span class="badge badge-local">Non</span></td>
+                        <td><code>test</code> ou <code>prod</code></td>
+                        <td>Mode test = 100–150 CFA débité. Mode prod = montant réel. Défaut : <code>prod</code></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="alert alert-ok" style="margin-top:1rem;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                <div>Une fois les variables définies, les URLs de paiement fonctionneront automatiquement : <strong>/paytech/checkout/{type}</strong> pour les abonnements, <strong>/paytech/depot</strong> pour les recharges portefeuille.</div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+function copyCode(btn) {
+    const block = btn.closest('.code-block');
+    const text  = block.innerText.replace('Copier\n', '').trim();
+    navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = '✓ Copié';
+        setTimeout(() => btn.textContent = 'Copier', 2000);
+    });
+}
+</script>
+</body>
+</html>

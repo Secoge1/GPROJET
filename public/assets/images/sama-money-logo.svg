@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60" fill="none">
+  <defs>
+    <linearGradient id="sg1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#7C3AED"/>
+      <stop offset="100%" style="stop-color:#5B21B6"/>
+    </linearGradient>
+    <linearGradient id="sg2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#A78BFA"/>
+      <stop offset="100%" style="stop-color:#7C3AED"/>
+    </linearGradient>
+  </defs>
+  <!-- Fond blanc -->
+  <rect width="200" height="60" rx="12" fill="#ffffff" stroke="#7C3AED" stroke-width="1.5"/>
+  <!-- Ic�ne S -->
+  <rect x="10" y="10" width="40" height="40" rx="10" fill="url(#sg1)"/>
+  <text x="30" y="37" font-family="Georgia, serif" font-size="20" font-weight="800" fill="#ffffff" text-anchor="middle">S</text>
+  <!-- Texte Sama Money -->
+  <text x="62" y="24" font-family="'Segoe UI', Arial, sans-serif" font-size="13" font-weight="700" fill="#7C3AED">Sama</text>
+  <text x="62" y="41" font-family="'Segoe UI', Arial, sans-serif" font-size="13" font-weight="600" fill="#1a1a1a">Money</text>
+  <!-- Points d�co -->
+  <circle cx="130" cy="20" r="3" fill="url(#sg2)" opacity="0.5"/>
+  <circle cx="140" cy="20" r="3" fill="url(#sg2)" opacity="0.3"/>
+</svg>

@@ -1,0 +1,25 @@
+PRODUCTION — Dossier uploads et affichage logo / avatars
+=======================================================
+
+Le code stocke les fichiers dans : <racine_projet>/uploads/  (constante UPLOAD_PATH).
+
+Les pages utilisent des URLs du type : BASE_URL/uploads/users/.../avatar.jpg
+
+Pour que le serveur web serve ces fichiers, le dossier public doit "voir" le meme
+contenu que globalo/uploads. Deux approches :
+
+1) Lien symbolique (recommandé si DocumentRoot = .../public)
+   chmod +x tools/link-uploads-linux.sh
+   ./tools/link-uploads-linux.sh
+
+2) Nginx — si vous ne pouvez pas creer de lien, alias direct vers le dossier :
+   location /uploads/ {
+       alias /chemin/vers/globalo/uploads/;
+       access_log off;
+   }
+   (Adapter le chemin et le bloc server_name / root.)
+
+Variable d'environnement BASE_URL sur le serveur (ex. https://globalo.secogesarl.com)
+pour des URLs d'assets correctes.
+
+Apres deploiement Git : si public/uploads n'est pas versionne, recreer le lien (1).

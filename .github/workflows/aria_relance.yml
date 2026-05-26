@@ -1,0 +1,70 @@
+name: ARIA — Relances inscriptions incomplètes
+
+on:
+  schedule:
+    # Tous les 3 jours à 08h30 UTC (≈ 08h30 Dakar / 09h30 Paris)
+    # Mardi, Vendredi, Dimanche — décalé de PROFIA (Lundi, Jeudi, Dimanche)
+    - cron: '30 8 * * 2,5,0'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Mode simulation (aucun email envoyé, résultats visibles en log)'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'false'
+          - 'true'
+
+jobs:
+  aria-relances:
+    name: ARIA – Relances inscriptions incomplètes
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Déclenchement relances ARIA
+        run: |
+          DRY_RUN="${{ github.event.inputs.dry_run || 'false' }}"
+
+          if [ "$DRY_RUN" = "true" ]; then
+            BODY='{"dry_run":true}'
+          else
+            BODY='{}'
+          fi
+
+          echo "→ ARIA : appel POST ${{ secrets.GLOBALO_URL }}/api/cron/aria-relance"
+          echo "→ Mode simulation : $DRY_RUN"
+
+          RESPONSE=$(curl -s -w "\n%{http_code}" \
+            --max-time 90 \
+            -X POST \
+            "${{ secrets.GLOBALO_URL }}/api/cron/aria-relance" \
+            -H "X-Cron-Secret: ${{ secrets.CRON_SECRET }}" \
+            -H "Content-Type: application/json" \
+            -d "$BODY")
+
+          HTTP_CODE=$(echo "$RESPONSE" | tail -1)
+          BODY_RESP=$(echo "$RESPONSE" | head -1)
+
+          echo "HTTP $HTTP_CODE"
+          echo "$BODY_RESP" | python3 -m json.tool 2>/dev/null || echo "$BODY_RESP"
+
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "::error::ARIA relances échouées (HTTP $HTTP_CODE) — réponse: $BODY_RESP"
+            exit 1
+          fi
+
+          OK=$(echo "$BODY_RESP" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('ok',''))" 2>/dev/null)
+          if [ "$OK" != "True" ] && [ "$OK" != "true" ] && [ "$OK" != "1" ]; then
+            echo "::warning::Réponse inattendue: $BODY_RESP"
+            exit 1
+          fi
+
+          STATS=$(echo "$BODY_RESP" | python3 -c "
+import sys, json
+d = json.load(sys.stdin)
+r = d.get('result', {})
+print(f\"✅ ARIA — Traités: {r.get('processed',0)} | Envoyés: {r.get('sent',0)} | Ignorés (cooldown): {r.get('skipped',0)} | Erreurs: {r.get('errors',0)}\")
+" 2>/dev/null)
+          echo "$STATS"

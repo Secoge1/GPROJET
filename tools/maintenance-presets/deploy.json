@@ -1,0 +1,7 @@
+{
+  "action":   "deploy",
+  "progress": 10,
+  "message":  "Nous déployons une nouvelle version de la plateforme. Nous serons de retour dans quelques minutes.",
+  "eta":      "",
+  "contact":  "admin@globalo.secogesarl.com"
+}

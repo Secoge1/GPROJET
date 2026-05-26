@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 130" width="300" height="130" role="img" aria-label="Globalo">
+  <text x="10" y="90"
+        font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif"
+        font-size="82" font-weight="800" fill="#1a2332" letter-spacing="-2">Globalo</text>
+  <defs>
+    <linearGradient id="smileGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="#f5a623"/>
+      <stop offset="55%"  stop-color="#8dc63f"/>
+      <stop offset="100%" stop-color="#16a34a"/>
+    </linearGradient>
+  </defs>
+  <!-- Courbe dégradée orange → vert -->
+  <path d="M 18 108 Q 155 145 280 105"
+        fill="none" stroke="url(#smileGrad)" stroke-width="7"
+        stroke-linecap="round"/>
+  <!-- Flèche verte au bout -->
+  <polyline points="270,98 282,105 272,114"
+            fill="none" stroke="#16a34a" stroke-width="7"
+            stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

@@ -1,0 +1,7 @@
+{
+  "action":   "migration",
+  "progress": 5,
+  "message":  "Une migration de base de données est en cours. Vos données sont en sécurité.",
+  "eta":      "",
+  "contact":  "admin@globalo.secogesarl.com"
+}

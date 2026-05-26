@@ -1,0 +1,307 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   GLOBALO — Habillage public desktop (navigation claire type marketplace,
+   recherche sticky accueil, cohérence pages marketing)
+   Dépend : desktop.css (chargé après)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+    --public-aurora-start: rgba(16, 185, 129, 0.14);
+    --public-aurora-mid: rgba(59, 130, 246, 0.08);
+    --public-mesh-blur: rgba(15, 23, 42, 0.04);
+}
+
+.layout-desktop.page-public-shell .main-desktop {
+    max-width: 1240px;
+    padding-left: clamp(1rem, 3vw, 1.75rem);
+    padding-right: clamp(1rem, 3vw, 1.75rem);
+    padding-top: 2.25rem;
+    background-color: #f1f5f9;
+    background-image:
+        radial-gradient(ellipse 100% 60% at 15% -5%, var(--public-aurora-start), transparent 52%),
+        radial-gradient(ellipse 80% 50% at 85% 10%, var(--public-aurora-mid), transparent 45%),
+        linear-gradient(180deg, #f8fafc 0%, #f1f5f9 42%, #e8edf4 100%);
+}
+
+/* ── Header clair ── */
+.page-public-shell .header-desktop {
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: saturate(180%) blur(18px);
+    -webkit-backdrop-filter: saturate(180%) blur(18px);
+    border-bottom: 1px solid rgba(15, 23, 42, 0.09);
+    box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.85) inset,
+        0 8px 32px rgba(15, 23, 42, 0.06);
+}
+
+.page-public-shell .header-desktop .logo.logo-desktop-wrap {
+    background: transparent;
+    box-shadow: none;
+    padding: 6px 12px 6px 0;
+}
+
+.page-public-shell .header-desktop .logo .logo-header-img {
+    filter: none;
+    height: 54px;
+    width: auto;
+    max-width: 135px;
+    object-fit: contain;
+    object-position: center;
+}
+
+.page-public-shell .nav-main {
+    gap: 0.2rem 0.45rem;
+}
+
+.page-public-shell .nav-main > a:not(.btn) {
+    color: #475569;
+    font-weight: 500;
+    font-size: 0.8125rem;
+}
+
+.page-public-shell .nav-main > a.nav-auth-link:not(.btn) {
+    color: #0f172a;
+}
+
+.page-public-shell .nav-main > a:not(.btn):hover {
+    color: var(--accent);
+    background: rgba(34, 197, 94, 0.08);
+}
+
+.page-public-shell .nav-main > a.active:not(.btn) {
+    color: var(--accent);
+    background: rgba(34, 197, 94, 0.12);
+    font-weight: 600;
+}
+
+.page-public-shell .nav-lang {
+    border-left-color: rgba(15, 23, 42, 0.12);
+    margin-left: 0.5rem;
+    padding-left: 0.65rem;
+}
+
+.page-public-shell .nav-lang a {
+    color: #64748b;
+}
+
+.page-public-shell .nav-lang a:hover,
+.page-public-shell .nav-lang a.active {
+    color: #0f172a;
+}
+
+/* CTA inscription (style Fiverr) */
+.page-public-shell .btn-public-signup.nav-cta-signup {
+    background: #fff !important;
+    color: #0f172a !important;
+    border: 2px solid #0f172a !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.01em;
+}
+
+.page-public-shell .btn-public-signup.nav-cta-signup:hover {
+    background: #f8fafc !important;
+    border-color: #0f172a !important;
+    color: #0f172a !important;
+}
+
+.page-public-shell .nav-espace-btn.btn-primary {
+    background: linear-gradient(135deg, #16a34a, #059669);
+    border-color: transparent;
+    color: #fff;
+}
+
+.page-public-shell .btn.nav-btn-outline-shell {
+    color: #0f172a;
+    border-color: rgba(15, 23, 42, 0.35);
+}
+
+.page-public-shell .btn.nav-btn-outline-shell:hover {
+    background: rgba(15, 23, 42, 0.05);
+}
+
+/* ── Rangée logo + recherche ── */
+.layout-desktop .header-inner--public {
+    flex-wrap: wrap;
+    gap: 0.75rem 1.25rem;
+    min-height: 80px;
+}
+
+.layout-desktop .header-brand-search {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.75rem, 2vw, 1.5rem);
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+/* Slot recherche : masqué jusqu’au scroll sur l’accueil */
+.layout-desktop.has-home-sticky-search .header-smart-search-slot {
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: 0;
+    opacity: 0;
+    overflow: visible;
+    transform: translateX(-10px);
+    pointer-events: none;
+    transition:
+        max-width 0.45s cubic-bezier(0.34, 1.2, 0.64, 1),
+        opacity 0.35s ease,
+        transform 0.4s cubic-bezier(0.34, 1.2, 0.64, 1);
+}
+
+.layout-desktop.has-home-sticky-search.public-home--hero-search-compact .header-smart-search-slot {
+    max-width: min(440px, 46vw);
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+}
+
+.layout-desktop.page-public-shell .header-inner .nav-main {
+    flex-shrink: 0;
+    margin-left: auto;
+}
+
+@media (max-width: 960px) {
+    .layout-desktop.has-home-sticky-search.public-home--hero-search-compact .header-smart-search-slot {
+        max-width: min(260px, 38vw);
+    }
+}
+
+@media (max-width: 720px) {
+    .layout-desktop.has-home-sticky-search .header-smart-search-slot {
+        order: 3;
+        width: 100%;
+        max-width: 100%;
+    }
+    .layout-desktop.has-home-sticky-search.public-home--hero-search-compact .header-smart-search-slot {
+        max-width: 100%;
+    }
+}
+
+/* Barre recherche compacte header (réf. Fiverr) */
+.header-smart-search-slot .hero-smart-search--compact-nav {
+    margin: 0;
+    max-width: none;
+}
+
+.header-smart-search-slot .hero-smart-search--compact-nav .hero-smart-search__field-wrap {
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    box-shadow:
+        0 1px 2px rgba(15, 23, 42, 0.04),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    background: #fff;
+    min-height: 44px;
+}
+
+.header-smart-search-slot .hero-smart-search__input {
+    padding: 0.55rem 0.85rem;
+    font-size: 0.9375rem;
+}
+
+.header-smart-search-slot .hero-smart-search__submit {
+    width: 48px;
+    min-height: 44px;
+    background: #111827;
+    border-radius: 0 8px 8px 0;
+}
+
+.header-smart-search-slot .hero-smart-search__dropdown.smart-search-dropdown {
+    top: calc(100% + 6px);
+    z-index: 500;
+}
+
+.layout-desktop.page-public-shell.has-home-sticky-search .header-desktop {
+    overflow: visible;
+}
+
+body.public-home--hero-search-compact .layout-desktop.page-public-shell .header-desktop {
+    box-shadow: 0 4px 24px rgba(15, 23, 42, 0.08);
+}
+
+/* Masquer recherche hero quand elle est dans le header */
+body.public-home--hero-search-compact .hero-smart-search--in-hero > .hero-smart-search__form {
+    opacity: 0;
+    transform: translateY(-10px);
+    max-height: 0;
+    margin: 0;
+    overflow: hidden;
+    pointer-events: none;
+    transition:
+        opacity 0.35s ease,
+        max-height 0.4s ease,
+        transform 0.35s ease,
+        margin 0.3s ease;
+}
+
+body.public-home--hero-search-compact .hero-smart-search--in-hero > .hero-smart-search__trust {
+    opacity: 0;
+    max-height: 0;
+    margin: 0;
+    overflow: hidden;
+    transition: opacity 0.3s ease, max-height 0.35s ease, margin 0.3s ease;
+}
+
+.hero-smart-search--in-hero > .hero-smart-search__form,
+.hero-smart-search--in-hero > .hero-smart-search__trust {
+    transition:
+        opacity 0.38s ease,
+        max-height 0.42s cubic-bezier(0.4, 0, 0.2, 1),
+        transform 0.38s ease,
+        margin 0.35s ease;
+}
+
+/* ── Footer public ── */
+.page-public-shell .footer-desktop {
+    background: linear-gradient(180deg, #0f172a 0%, #020617 100%);
+    border-top: none;
+    box-shadow: inset 0 1px 0 rgba(34, 197, 94, 0.25);
+}
+
+/* ── Hero accueil plus « premium » ── */
+.page-public-shell .page-home .hero-desktop.hero-home,
+.page-home > .hero-home {
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.page-home .hero-desktop.hero-home {
+    background:
+        linear-gradient(135deg, #064e3b 0%, #0d9488 38%, #115e59 72%, #0f766e 100%);
+    box-shadow:
+        0 4px 6px rgba(0, 0, 0, 0.12),
+        0 24px 60px rgba(6, 78, 59, 0.45),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.page-home .hero-home-backdrop {
+    background:
+        radial-gradient(ellipse 90% 70% at 80% -10%, rgba(167, 243, 208, 0.2) 0%, transparent 50%),
+        radial-gradient(ellipse 60% 50% at 0% 90%, rgba(15, 23, 42, 0.25) 0%, transparent 55%);
+}
+
+.page-home .hero-smart-search--in-hero .hero-smart-search__field-wrap {
+    border: 1px solid rgba(255, 255, 255, 0.38);
+}
+
+/* Cartes sections publiques : léger polish */
+.page-public-shell .section-desktop {
+    position: relative;
+}
+
+.page-public-shell .card-desktop,
+.page-public-shell .audience-card {
+    border: 1px solid rgba(15, 23, 42, 0.06);
+    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
+}
+
+.page-public-shell .section-badge {
+    background: rgba(34, 197, 94, 0.12);
+    color: var(--accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .layout-desktop.has-home-sticky-search .header-smart-search-slot,
+    body.public-home--hero-search-compact .hero-smart-search--in-hero > .hero-smart-search__form,
+    body.public-home--hero-search-compact .hero-smart-search--in-hero > .hero-smart-search__trust {
+        transition: none !important;
+    }
+}

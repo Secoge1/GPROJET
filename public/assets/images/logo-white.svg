@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 130" width="300" height="130" role="img" aria-label="Globalo">
+  <text x="10" y="90"
+        font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif"
+        font-size="82" font-weight="800" fill="#ffffff" letter-spacing="-2">Globalo</text>
+  <defs>
+    <linearGradient id="smileGradW" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="#fbbf24"/>
+      <stop offset="55%"  stop-color="#86efac"/>
+      <stop offset="100%" stop-color="#4ade80"/>
+    </linearGradient>
+  </defs>
+  <path d="M 18 108 Q 155 145 280 105"
+        fill="none" stroke="url(#smileGradW)" stroke-width="7"
+        stroke-linecap="round"/>
+  <polyline points="270,98 282,105 272,114"
+            fill="none" stroke="#4ade80" stroke-width="7"
+            stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

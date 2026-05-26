@@ -1,0 +1,138 @@
+/* Sélection opérateurs InTouch (Orange / Moov / Wave) */
+
+.intouch-op-picker {
+  border: none;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+
+.intouch-op-picker__legend {
+  display: block;
+  font-weight: 600;
+  font-size: 0.82rem;
+  color: var(--text, #374151);
+  margin-bottom: 0.5rem;
+}
+
+.intouch-op-picker__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+
+@media (max-width: 360px) {
+  .intouch-op-picker__grid {
+    grid-template-columns: 1fr;
+    gap: 0.45rem;
+  }
+}
+
+.intouch-op-card {
+  position: relative;
+  cursor: pointer;
+  margin: 0;
+  border-radius: 12px;
+  border: 2px solid var(--border, #e2e8f0);
+  background: var(--card-bg, #fff);
+  transition: border-color 0.15s, box-shadow 0.15s, transform 0.12s;
+}
+
+.intouch-op-card:hover {
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
+}
+
+.intouch-op-card--orange:hover {
+  border-color: #fdba74;
+}
+
+.intouch-op-card--moov:hover {
+  border-color: #93c5fd;
+}
+
+.intouch-op-card--wave:hover {
+  border-color: #7dd3fc;
+}
+
+.intouch-op-card:has(.intouch-op-card__input:checked),
+.intouch-op-card.intouch-op-card--selected {
+  border-width: 2px;
+}
+
+.intouch-op-card--orange:has(.intouch-op-card__input:checked),
+.intouch-op-card--orange.intouch-op-card--selected {
+  border-color: #ff7900;
+  box-shadow: 0 0 0 3px rgba(255, 121, 0, 0.22);
+}
+
+.intouch-op-card--moov:has(.intouch-op-card__input:checked),
+.intouch-op-card--moov.intouch-op-card--selected {
+  border-color: #0066b3;
+  box-shadow: 0 0 0 3px rgba(0, 102, 179, 0.2);
+}
+
+.intouch-op-card--wave:has(.intouch-op-card__input:checked),
+.intouch-op-card--wave.intouch-op-card--selected {
+  border-color: #1ba3de;
+  box-shadow: 0 0 0 3px rgba(27, 163, 222, 0.25);
+}
+
+.intouch-op-card__input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  pointer-events: none;
+}
+
+.intouch-op-card__face {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.55rem 0.4rem 0.5rem;
+  text-align: center;
+  min-height: 4.5rem;
+}
+
+.intouch-op-card__logo {
+  height: 40px;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+@media (min-width: 521px) {
+  .intouch-op-card__logo {
+    height: 44px;
+  }
+}
+
+.intouch-op-card__label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted, #64748b);
+  line-height: 1.2;
+}
+
+.intouch-op-card--orange:has(.intouch-op-card__input:checked) .intouch-op-card__label,
+.intouch-op-card--orange.intouch-op-card--selected .intouch-op-card__label {
+  color: #c2410c;
+}
+
+.intouch-op-card--moov:has(.intouch-op-card__input:checked) .intouch-op-card__label,
+.intouch-op-card--moov.intouch-op-card--selected .intouch-op-card__label {
+  color: #1e40af;
+}
+
+.intouch-op-card--wave:has(.intouch-op-card__input:checked) .intouch-op-card__label,
+.intouch-op-card--wave.intouch-op-card--selected .intouch-op-card__label {
+  color: #0369a1;
+}
+
+.mm-operator-logos--intouch img {
+  border-radius: 10px;
+}

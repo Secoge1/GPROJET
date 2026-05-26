@@ -1,0 +1,52 @@
+# GLOBALO — Configuration environnement
+#
+# ============================================================
+# PRODUCTION  (globalo.secogesarl.com)
+# LOCAL WAMP  — commenter les deux SetEnv ci-dessous (config.php auto-détecte localhost)
+#               DB_USER root / DB_PASS vide dans .env ou variables locales
+# ============================================================
+
+# Environnement (commenter en local pour éviter redirect post-login vers la prod)
+SetEnv GLOBALO_ENV production
+SetEnv BASE_URL    https://globalo.secogesarl.com
+SetEnv GSC_VERIFICATION google6a9100ecd5b137ef
+
+# Base de donnees
+SetEnv DB_HOST     localhost
+SetEnv DB_NAME     cp2640311p29_globalo
+SetEnv DB_USER     cp2640311p29_globalo
+SetEnv DB_PASS     cp2640311p29_globalo
+
+# -- PayTech (paytech.sn) — passerelle utilisée pour abonnements, dépôts et missions (/paytech/*) --
+# Obligatoire si vous activez PayTech : les clés viennent du tableau de marchand PayTech.
+# À dé-commenter et remplir sur le serveur (ne pas committer de vraies clés dans le dépôt) :
+SetEnv PAYTECH_API_KEY      "987eda1da1e05545873edf5be5af0105f8e7c7e00a2a489b981db9d555fb1142"
+SetEnv PAYTECH_API_SECRET   "85562ca97981239f611c212fde9b91d0ad59f0995cafd8edc0667d7af3b270cc"
+SetEnv PAYTECH_ENV          prod
+# Valeur test : PAYTECH_ENV test (avec clés sandbox PayTech uniquement).
+
+# -- InTouch / TouchPay (legacy) — utilisé SEULEMENT si des parcours /intouch/* ou TouchPay restent activés --
+# Ce n’est pas PayTech ; ne remplace pas PAYTECH_* ci-dessus.
+SetEnv INTOUCH_API_USERNAME   23226cf1c7cd96dbf02f3391de1a3b568ff7b4c58d28766f36f8612b9e68b5f2
+SetEnv INTOUCH_API_PASSWORD   1203988b6809958c66e877d4b78b444604459d0edd6093d962a833eac592d24a
+SetEnv INTOUCH_LOGIN_AGENT    78063874
+SetEnv INTOUCH_PASSWORD_AGENT AaS3Ncav
+SetEnv INTOUCH_ID             SECOG8069
+SetEnv TOUCHPAY_SECURE_CODE   ZkkHgWfaZPat2CsKw8VnfFPf7dvZESCoQcl71fdfGROOxiPeR6
+SetEnv INTOUCH_SERVICE_ORANGE ML_PAIEMENTMARCHAND_OM_TP
+SetEnv INTOUCH_SERVICE_MOOV   ML_PAIEMENTMARCHAND_MOOV_TP
+SetEnv INTOUCH_SERVICE_WAVE   ML_PAIEMENTWAVE_TP
+SetEnv TOUCHPAY_ABONNEMENT_MODE widget
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^$ public/ [L]
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+    RewriteCond %{DOCUMENT_ROOT}/public/$1 -f
+    RewriteRule ^(.+)$ public/$1 [L]
+    RewriteRule ^(.*)$ public/index.php?url=$1 [QSA,L]
+</IfModule>
+
+Options -Indexes

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60" fill="none">
+  <defs>
+    <linearGradient id="mg1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00AEEF"/>
+      <stop offset="100%" style="stop-color:#0072BC"/>
+    </linearGradient>
+    <linearGradient id="mg2" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#00AEEF"/>
+      <stop offset="100%" style="stop-color:#00C853"/>
+    </linearGradient>
+  </defs>
+  <!-- Fond blanc -->
+  <rect width="200" height="60" rx="12" fill="#ffffff" stroke="#00AEEF" stroke-width="1.5"/>
+  <!-- Ic�ne M stylis�e -->
+  <rect x="10" y="10" width="40" height="40" rx="10" fill="url(#mg1)"/>
+  <text x="30" y="37" font-family="'Segoe UI', Arial, sans-serif" font-size="18" font-weight="800" fill="#ffffff" text-anchor="middle">M</text>
+  <!-- Texte Moov Africa -->
+  <text x="62" y="24" font-family="'Segoe UI', Arial, sans-serif" font-size="13" font-weight="700" fill="#00AEEF">Moov</text>
+  <text x="62" y="41" font-family="'Segoe UI', Arial, sans-serif" font-size="12" font-weight="600" fill="#555555">Africa Money</text>
+  <!-- Barre d�co -->
+  <rect x="62" y="27" width="90" height="2" rx="1" fill="url(#mg2)" opacity="0.5"/>
+</svg>

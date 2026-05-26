@@ -1,0 +1,13 @@
+{
+    "name": "globalo/app",
+    "description": "GLOBALO plateforme",
+    "license": "proprietary",
+    "require": {
+        "php": ">=7.4",
+        "minishlink/web-push": "^7.0"
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    }
+}

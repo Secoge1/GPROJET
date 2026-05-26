@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60" fill="none">
+  <defs>
+    <linearGradient id="og1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF6600"/>
+      <stop offset="100%" style="stop-color:#FF8C00"/>
+    </linearGradient>
+  </defs>
+  <!-- Fond blanc avec bordure -->
+  <rect width="200" height="60" rx="12" fill="#ffffff" stroke="#FF6600" stroke-width="1.5"/>
+  <!-- Cercle orange -->
+  <circle cx="32" cy="30" r="20" fill="url(#og1)"/>
+  <!-- Lettres OM -->
+  <text x="32" y="36" font-family="'Segoe UI', Arial, sans-serif" font-size="13" font-weight="800" fill="#ffffff" text-anchor="middle">OM</text>
+  <!-- Texte Orange Money -->
+  <text x="62" y="24" font-family="'Segoe UI', Arial, sans-serif" font-size="13" font-weight="700" fill="#FF6600">Orange</text>
+  <text x="62" y="41" font-family="'Segoe UI', Arial, sans-serif" font-size="13" font-weight="700" fill="#1a1a1a">Money</text>
+</svg>
