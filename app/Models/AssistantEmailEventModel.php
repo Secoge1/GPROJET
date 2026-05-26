@@ -114,6 +114,91 @@ class AssistantEmailEventModel extends Model
         return $stmt->rowCount() > 0;
     }
 
+    // ──────────────────────────────────────────────────────────────────────────
+    // RAPPORT RELANCES ARIA & PROFIA
+    // ──────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Statistiques globales des relances ARIA et PROFIA.
+     *
+     * @return array{total:int,total_aria:int,total_profia:int,envoyes:int,echecs:int,ce_mois:int,cette_semaine:int}
+     */
+    public function getRelancesStats(): array
+    {
+        try {
+            $stats = [];
+            $stats['total'] = (int) $this->db->query(
+                "SELECT COUNT(*) FROM {$this->table} WHERE reason_code LIKE 'aria_%' OR reason_code LIKE 'profia_%'"
+            )->fetchColumn();
+            $stats['total_aria'] = (int) $this->db->query(
+                "SELECT COUNT(*) FROM {$this->table} WHERE reason_code LIKE 'aria_%'"
+            )->fetchColumn();
+            $stats['total_profia'] = (int) $this->db->query(
+                "SELECT COUNT(*) FROM {$this->table} WHERE reason_code LIKE 'profia_%'"
+            )->fetchColumn();
+            $stats['envoyes'] = (int) $this->db->query(
+                "SELECT COUNT(*) FROM {$this->table} WHERE status IN ('sent','resent') AND (reason_code LIKE 'aria_%' OR reason_code LIKE 'profia_%')"
+            )->fetchColumn();
+            $stats['echecs'] = (int) $this->db->query(
+                "SELECT COUNT(*) FROM {$this->table} WHERE status = 'failed' AND (reason_code LIKE 'aria_%' OR reason_code LIKE 'profia_%')"
+            )->fetchColumn();
+            $stats['ce_mois'] = (int) $this->db->query(
+                "SELECT COUNT(*) FROM {$this->table} WHERE (reason_code LIKE 'aria_%' OR reason_code LIKE 'profia_%') AND sent_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)"
+            )->fetchColumn();
+            $stats['cette_semaine'] = (int) $this->db->query(
+                "SELECT COUNT(*) FROM {$this->table} WHERE (reason_code LIKE 'aria_%' OR reason_code LIKE 'profia_%') AND sent_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)"
+            )->fetchColumn();
+            return $stats;
+        } catch (\Throwable $e) {
+            return ['total' => 0, 'total_aria' => 0, 'total_profia' => 0, 'envoyes' => 0, 'echecs' => 0, 'ce_mois' => 0, 'cette_semaine' => 0];
+        }
+    }
+
+    /**
+     * Compte les relances filtrées par agent ('aria', 'profia', ou '' pour tous).
+     */
+    public function countRelances(string $agent = ''): int
+    {
+        try {
+            if ($agent === 'aria') {
+                return (int) $this->db->query("SELECT COUNT(*) FROM {$this->table} WHERE reason_code LIKE 'aria_%'")->fetchColumn();
+            }
+            if ($agent === 'profia') {
+                return (int) $this->db->query("SELECT COUNT(*) FROM {$this->table} WHERE reason_code LIKE 'profia_%'")->fetchColumn();
+            }
+            return (int) $this->db->query("SELECT COUNT(*) FROM {$this->table} WHERE reason_code LIKE 'aria_%' OR reason_code LIKE 'profia_%'")->fetchColumn();
+        } catch (\Throwable $e) {
+            return 0;
+        }
+    }
+
+    /**
+     * Liste paginée des relances ARIA et/ou PROFIA.
+     *
+     * @return array<int,array<string,mixed>>
+     */
+    public function getRelancesPaginated(int $offset, int $limit, string $agent = ''): array
+    {
+        try {
+            if ($agent === 'aria') {
+                $where = "WHERE (e.reason_code LIKE 'aria_%')";
+            } elseif ($agent === 'profia') {
+                $where = "WHERE (e.reason_code LIKE 'profia_%')";
+            } else {
+                $where = "WHERE (e.reason_code LIKE 'aria_%' OR e.reason_code LIKE 'profia_%')";
+            }
+            $sql = "SELECT e.*, u.email AS user_email, u.prenom, u.nom, u.role
+                    FROM {$this->table} e
+                    LEFT JOIN utilisateurs u ON u.id = e.utilisateur_id
+                    {$where}
+                    ORDER BY e.sent_at DESC
+                    LIMIT " . (int) $limit . " OFFSET " . (int) $offset;
+            return $this->db->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\Throwable $e) {
+            return [];
+        }
+    }
+
     private function safeAlter(string $sql): void
     {
         try {

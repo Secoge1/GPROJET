@@ -277,6 +277,65 @@ class AdminController extends Controller
         $this->redirect(rtrim(BASE_URL ?? '', '/') . '/admin/tracking');
     }
 
+    /** Rapport détaillé des relances ARIA & PROFIA. */
+    public function relancesRapport(): void
+    {
+        $agent  = in_array($_GET['agent'] ?? '', ['aria', 'profia', ''], true) ? ($_GET['agent'] ?? '') : '';
+        $page   = max(1, (int)($_GET['page'] ?? 1));
+        $perPage = 25;
+        $offset = ($page - 1) * $perPage;
+
+        $model  = new \App\Models\AssistantEmailEventModel();
+        $model->ensureTable();
+        $stats  = $model->getRelancesStats();
+        $total  = $model->countRelances($agent);
+        $rows   = $model->getRelancesPaginated($offset, $perPage, $agent);
+        $pages  = max(1, (int) ceil($total / $perPage));
+
+        $this->render('relances_rapport', [
+            'pageTitle' => 'Rapport Relances ARIA & PROFIA - Admin GLOBALO',
+            'user'      => ['id' => Auth::id(), 'role' => 'admin'],
+            'stats'     => $stats,
+            'rows'      => $rows,
+            'page'      => $page,
+            'pages'     => $pages,
+            'total'     => $total,
+            'agent'     => $agent,
+        ]);
+    }
+
+    /** Déclencher ARIA relance manuellement depuis l'admin. */
+    public function runAriaRelanceNow(): void
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->redirect(rtrim(BASE_URL ?? '', '/') . '/admin/relances-rapport');
+            return;
+        }
+        try {
+            $result = (new \App\Services\AriaRelanceService())->run();
+            $_SESSION['flash_success'] = "ARIA : {$result['sent']} email(s) envoyé(s), {$result['skipped']} ignoré(s).";
+        } catch (\Throwable $e) {
+            $_SESSION['flash_error'] = "Échec ARIA : " . $e->getMessage();
+        }
+        $this->redirect(rtrim(BASE_URL ?? '', '/') . '/admin/relances-rapport');
+    }
+
+    /** Déclencher PROFIA relance manuellement depuis l'admin. */
+    public function runProfiaRelanceNow(): void
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->redirect(rtrim(BASE_URL ?? '', '/') . '/admin/relances-rapport');
+            return;
+        }
+        try {
+            $result = (new \App\Services\ProfiaRelanceService())->run();
+            $_SESSION['flash_success'] = "PROFIA : {$result['sent']} email(s) envoyé(s), {$result['skipped']} ignoré(s).";
+        } catch (\Throwable $e) {
+            $_SESSION['flash_error'] = "Échec PROFIA : " . $e->getMessage();
+        }
+        $this->redirect(rtrim(BASE_URL ?? '', '/') . '/admin/relances-rapport');
+    }
+
     /** Journal des emails automatiques IA (pagination + actions). */
     public function assistantEmails(): void
     {
