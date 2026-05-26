@@ -1,4 +1,4 @@
-name: ARIA - Relances inscriptions incompletes
+name: ARIA - Relances inscriptions
 
 on:
   schedule:
@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       dry_run:
-        description: 'Mode simulation (aucun email envoye)'
+        description: 'Simulation sans envoi'
         required: false
         default: 'false'
         type: choice
@@ -15,41 +15,27 @@ on:
           - 'true'
 
 jobs:
-  aria-relances:
-    name: ARIA - Relances inscriptions incompletes
+  relances:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-
     steps:
-      - name: Declenchement relances ARIA
+      - name: Appel API ARIA
         run: |
           DRY_RUN="${{ github.event.inputs.dry_run || 'false' }}"
-          if [ "$DRY_RUN" = "true" ]; then BODY='{"dry_run":true}'; else BODY='{}'; fi
-
-          echo "-> ARIA : POST ${{ secrets.GLOBALO_URL }}/api/cron/aria-relance"
-          echo "-> Mode simulation : $DRY_RUN"
-
-          RESPONSE=$(curl -s -w "\n%{http_code}" --max-time 90 -X POST \
+          if [ "$DRY_RUN" = "true" ]; then
+            BODY='{"dry_run":true}'
+          else
+            BODY='{}'
+          fi
+          HTTP=$(curl -s -o /tmp/resp.json -w "%{http_code}" --max-time 90 -X POST \
             "${{ secrets.GLOBALO_URL }}/api/cron/aria-relance" \
             -H "X-Cron-Secret: ${{ secrets.CRON_SECRET }}" \
-            -H "Content-Type: application/json" -d "$BODY")
-
-          HTTP_CODE=$(echo "$RESPONSE" | tail -1)
-          BODY_RESP=$(echo "$RESPONSE" | head -1)
-
-          echo "HTTP $HTTP_CODE"
-          echo "$BODY_RESP" | python3 -m json.tool 2>/dev/null || echo "$BODY_RESP"
-
-          if [ "$HTTP_CODE" != "200" ]; then
-            echo "::error::ARIA echouee (HTTP $HTTP_CODE)"
+            -H "Content-Type: application/json" \
+            -d "$BODY")
+          cat /tmp/resp.json
+          echo "HTTP: $HTTP"
+          if [ "$HTTP" != "200" ]; then
+            echo "Erreur HTTP $HTTP"
             exit 1
           fi
-
-          OK=$(echo "$BODY_RESP" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('ok',''))" 2>/dev/null)
-          if [ "$OK" != "True" ] && [ "$OK" != "true" ] && [ "$OK" != "1" ]; then
-            echo "::warning::Reponse inattendue: $BODY_RESP"
-            exit 1
-          fi
-
-          echo "$BODY_RESP" | python3 -c "import sys,json; r=json.load(sys.stdin).get('result',{}); print('ARIA OK - Envoyes: '+str(r.get('sent',0))+' | Ignores: '+str(r.get('skipped',0))+' | Erreurs: '+str(r.get('errors',0)))" 2>/dev/null
-          echo "Campagne ARIA terminee avec succes"
+          echo "ARIA OK"
